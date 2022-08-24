@@ -20,7 +20,7 @@ const directoryName = "repo-to-push";
 	await fs.promises.appendFile(`./${directoryName}/test2.txt`, "test2");
 
 	// add changes
-	await git.add("*");
+	await git.add(".");
 
 	// commit changes
 	await git.commit("add test2.txt");

@@ -56,7 +56,7 @@ var directoryName = "repo-to-push";
                 return [4, fs.promises.appendFile("./".concat(directoryName, "/test2.txt"), "test2")];
             case 4:
                 _a.sent();
-                return [4, git.add("*")];
+                return [4, git.add(".")];
             case 5:
                 _a.sent();
                 return [4, git.commit("add test2.txt")];

@@ -43,11 +43,11 @@ var git = (0, simple_git_1.simpleGit)();
 var repositoryURL = "git@github.com:BerkinAKKAYA/repo-to-push-demo.git";
 var directoryName = "repo-to-push";
 var fileToEdit = "values.yml";
-var key = "replicaCount";
-var value = 2;
+var key = "image.tag";
+var value = 0.2;
 var commitMessage = "set ".concat(key, " to ").concat(value);
 (function () { return __awaiter(void 0, void 0, void 0, function () {
-    var filePath, fileContentString, fileContentJSON, keys, lastKey, currentJson, _i, keys_1, _key, newFileContent, error_1;
+    var filePath, fileContentString, fileContentJSON, newFileContent, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -69,22 +69,7 @@ var commitMessage = "set ".concat(key, " to ").concat(value);
             case 5:
                 fileContentString = _a.sent();
                 fileContentJSON = yaml.load(fileContentString);
-                if (key.includes(".")) {
-                    keys = key.split(".");
-                    lastKey = keys.pop();
-                    currentJson = fileContentJSON;
-                    for (_i = 0, keys_1 = keys; _i < keys_1.length; _i++) {
-                        _key = keys_1[_i];
-                        if (!currentJson.hasOwnProperty(_key)) {
-                            throw new Error("Unknown Key / Path");
-                        }
-                        currentJson = currentJson[_key];
-                    }
-                    currentJson[lastKey] = value;
-                }
-                else {
-                    fileContentJSON[key] = value;
-                }
+                EditJSON(fileContentJSON, key, value.toString());
                 newFileContent = yaml.dump(fileContentJSON);
                 return [4, fs.promises.writeFile(filePath, newFileContent)];
             case 6:
@@ -113,4 +98,23 @@ var commitMessage = "set ".concat(key, " to ").concat(value);
         }
     });
 }); })();
+function EditJSON(json, key, value) {
+    var parsedValue = isNaN(parseFloat(value)) ? value : parseFloat(value);
+    if (key.includes(".")) {
+        var keys = key.split(".");
+        var lastKey = keys.pop();
+        var currentJson = json;
+        for (var _i = 0, keys_1 = keys; _i < keys_1.length; _i++) {
+            var _key = keys_1[_i];
+            if (!currentJson.hasOwnProperty(_key)) {
+                throw new Error("Unknown Key / Path");
+            }
+            currentJson = currentJson[_key];
+        }
+        currentJson[lastKey] = parsedValue;
+    }
+    else {
+        json[key] = parsedValue;
+    }
+}
 //# sourceMappingURL=index.js.map

@@ -8,8 +8,8 @@ const repositoryURL = "git@github.com:BerkinAKKAYA/repo-to-push-demo.git";
 const directoryName = "repo-to-push";
 
 const fileToEdit = "values.yml";
-const key = "replicaCount";
-const value = 2;
+const key = "image.tag";
+const value = 0.2;
 const commitMessage = `set ${key} to ${value}`;
 
 (async () => {
@@ -36,25 +36,7 @@ const commitMessage = `set ${key} to ${value}`;
 		const fileContentJSON = yaml.load(fileContentString);
 
 		// edit file content
-		if (key.includes(".")) {
-			const keys = key.split(".");
-			const lastKey = keys.pop();
-
-			let currentJson = fileContentJSON;
-
-			for (const _key of keys) {
-				if (!currentJson.hasOwnProperty(_key)) {
-					throw new Error("Unknown Key / Path");
-				}
-
-				currentJson = currentJson[_key];
-			}
-
-			currentJson[lastKey] = value;
-		} else {
-			fileContentJSON[key] = value;
-		}
-
+		EditJSON(fileContentJSON, key, value.toString());
 		const newFileContent = yaml.dump(fileContentJSON);
 
 		// write file content
@@ -83,3 +65,26 @@ const commitMessage = `set ${key} to ${value}`;
 		console.log("error:", error);
 	}
 })();
+
+function EditJSON(json: any, key: string, value: string) {
+	const parsedValue = isNaN(parseFloat(value)) ? value : parseFloat(value);
+
+	if (key.includes(".")) {
+		const keys = key.split(".");
+		const lastKey = keys.pop();
+
+		let currentJson = json;
+
+		for (const _key of keys) {
+			if (!currentJson.hasOwnProperty(_key)) {
+				throw new Error("Unknown Key / Path");
+			}
+
+			currentJson = currentJson[_key];
+		}
+
+		currentJson[lastKey] = parsedValue;
+	} else {
+		json[key] = parsedValue;
+	}
+}

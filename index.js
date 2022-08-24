@@ -38,35 +38,72 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 var simple_git_1 = require("simple-git");
 var fs = require("fs");
+var GIT_SSH_COMMAND = 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no';
 var git = (0, simple_git_1.simpleGit)();
+git
+    .env('GIT_SSH_COMMAND', GIT_SSH_COMMAND)
+    .status(function (err, status) {
+    console.log("status", { err: err, status: status });
+});
 var repositoryURL = "git@github.com:BerkinAKKAYA/repo-to-push-demo.git";
 var directoryName = "repo-to-push";
+var fileNameToAdd = "test3.txt";
+var fileContent = "test3 content";
+var commitMessage = "add test3 file";
 (function () { return __awaiter(void 0, void 0, void 0, function () {
+    var error_1, error_2, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4, fs.promises.rmdir(directoryName, { recursive: true })];
+            case 0:
+                _a.trys.push([0, 5, , 6]);
+                return [4, fs.promises.rmdir(directoryName, { recursive: true })];
             case 1:
                 _a.sent();
-                return [4, git.clone(repositoryURL, directoryName).cwd({ path: directoryName, root: true })];
+                return [4, git.clone(repositoryURL, directoryName)];
             case 2:
                 _a.sent();
-                return [4, git.pull('origin', 'main', { '--rebase': 'false' })];
+                return [4, git.cwd({ path: directoryName, root: true })];
             case 3:
                 _a.sent();
-                return [4, fs.promises.appendFile("./".concat(directoryName, "/test2.txt"), "test2")];
+                return [4, git.pull('origin', 'main', { '--rebase': 'false' })];
             case 4:
                 _a.sent();
-                return [4, git.add(".")
-                        .then(function (x) { return console.log("added", x); })["catch"](function (x) { return console.log("couldn't add", x); })];
+                return [3, 6];
             case 5:
-                _a.sent();
-                return [4, git.commit("add test2.txt", "*")
-                        .then(function (x) { return console.log("committed", x); })["catch"](function (x) { return console.log("couldn't commit", x); })];
+                error_1 = _a.sent();
+                console.log(error_1);
+                return [3, 6];
             case 6:
+                _a.trys.push([6, 8, , 9]);
+                return [4, fs.promises.appendFile("./".concat(directoryName, "/").concat(fileNameToAdd), fileContent)];
+            case 7:
+                _a.sent();
+                return [3, 9];
+            case 8:
+                error_2 = _a.sent();
+                console.log(error_2);
+                return [3, 9];
+            case 9:
+                _a.trys.push([9, 13, , 14]);
+                return [4, git.add(".")
+                        .then(function (x) { return console.log("successfull: add"); })["catch"](function (x) { return console.log("error: add", x); })];
+            case 10:
+                _a.sent();
+                return [4, git.commit(commitMessage, "*")
+                        .then(function (x) { return console.log("successfull: commit"); })["catch"](function (x) { return console.log("error: commit", x); })];
+            case 11:
                 _a.sent();
                 return [4, git.push("origin", "main")
-                        .then(function (x) { return console.log("pushed", x); })["catch"](function (x) { return console.log("couldn't push", x); })];
-            case 7:
+                        .then(function (x) { return console.log("successfull: push"); })["catch"](function (x) { return console.log("couldn't push", x); })];
+            case 12:
+                _a.sent();
+                return [3, 14];
+            case 13:
+                error_3 = _a.sent();
+                console.log("error:", error_3);
+                return [3, 14];
+            case 14: return [4, fs.promises.rmdir(directoryName, { recursive: true })];
+            case 15:
                 _a.sent();
                 return [2];
         }

@@ -6,13 +6,15 @@ const git: SimpleGit = simpleGit();
 const repositoryURL = "git@github.com:BerkinAKKAYA/repo-to-push-demo.git";
 const directoryName = "repo-to-push";
 
-const fileNameToAdd = "test3.txt";
-const fileContent = "test3 content";
-const commitMessage = "add test3 file";
+const fileToEdit = "values.yml";
+const key = "replicaCount";
+const value = 2;
+const commitMessage = `set ${key} to ${value}`;
 
 (async () => {
-	// clone and pull repository
 	try {
+		// --- CLONE REPOSITORY ---
+
 		// remove previously created repository
 		await fs.promises.rmdir(directoryName, { recursive: true });
 
@@ -24,19 +26,38 @@ const commitMessage = "add test3 file";
 
 		// pull
 		await git.pull('origin', 'main', { '--rebase': 'false' });
-	} catch (error) {
-		console.log(error);
-	}
 
-	// edit repository
-	try {
-		await fs.promises.appendFile(`./${directoryName}/${fileNameToAdd}`, fileContent);
-	} catch (error) {
-		console.log(error);
-	}
+		// --- EDIT CONTENT ---
 
-	// add, commit, push
-	try {
+		// get file content
+		const filePath = `./${directoryName}/${fileToEdit}`;
+		const fileContentString: string = await fs.promises.readFile(filePath, { encoding: "utf8" });
+
+		// edit file content
+		if (key.includes(".")) {
+			const keys = key.split(".");
+			const lastKey = keys.pop();
+
+			let currentJson = fileContentJSON;
+
+			for (const _key of keys) {
+				if (!currentJson.hasOwnProperty(_key)) {
+					throw new Error("Unknown Key / Path");
+				}
+
+				currentJson = currentJson[_key];
+			}
+
+			currentJson[lastKey] = value;
+		} else {
+			fileContentJSON[key] = value;
+		}
+
+		// write file content
+		await fs.promises.writeFile(filePath, JSON.stringify(fileContentJSON));
+
+		// --- PUSH CHANGES ---
+
 		// add changes
 		await git.add(".")
 			.then(x => console.log("successfull: add"))
@@ -51,10 +72,10 @@ const commitMessage = "add test3 file";
 		await git.push("origin", "main")
 			.then(x => console.log("successfull: push"))
 			.catch(x => console.log("couldn't push", x));
+
+		// remove previously created repository
+		await fs.promises.rmdir(directoryName, { recursive: true });
 	} catch (error) {
 		console.log("error:", error);
 	}
-
-	// remove previously created repository
-	await fs.promises.rmdir(directoryName, { recursive: true });
 })();

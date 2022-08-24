@@ -1,7 +1,27 @@
-import { simpleGit, SimpleGit, CleanOptions } from 'simple-git';
+import { simpleGit, SimpleGit } from 'simple-git';
+import * as fs from 'fs';
 
 const git: SimpleGit = simpleGit();
 
-git.clone("git@github.com:BerkinAKKAYA/git-pusher-service-demo.git", "./git-pusher-service-demo");
+const repositoryURL = "git@github.com:BerkinAKKAYA/repo-to-push-demo.git";
+const directoryName = "repo-to-push";
 
-console.log(git);
+(async () => {
+	// remove previously created repository
+	await fs.promises.rmdir(directoryName, { recursive: true });
+
+	// clone repository
+	await git.clone(repositoryURL, directoryName).cwd({ path: directoryName, root: true });
+
+	// pull
+	await git.pull('origin', 'main', { '--rebase': 'false' });
+
+	// edit repository
+	await fs.promises.appendFile(`./${directoryName}/test2.txt`, "test2");
+
+	// add changes
+	await git.add("*");
+
+	// commit changes
+	await git.commit("add test2.txt");
+})()

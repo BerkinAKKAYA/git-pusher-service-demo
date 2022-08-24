@@ -59,7 +59,7 @@ var directoryName = "repo-to-push";
                 return [4, git.add(".")];
             case 5:
                 _a.sent();
-                return [4, git.commit("add test2.txt")];
+                return [4, git.commit("add test2.txt", "*")];
             case 6:
                 _a.sent();
                 return [4, git.push("origin", "main")];

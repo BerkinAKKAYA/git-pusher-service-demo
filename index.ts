@@ -23,7 +23,7 @@ const directoryName = "repo-to-push";
 	await git.add(".");
 
 	// commit changes
-	await git.commit("add test2.txt");
+	await git.commit("add test2.txt", "*");
 
 	// push changes
 	await git.push("origin", "main");

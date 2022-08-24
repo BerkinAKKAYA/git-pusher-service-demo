@@ -38,19 +38,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 var simple_git_1 = require("simple-git");
 var fs = require("fs");
+var yaml = require('js-yaml');
 var git = (0, simple_git_1.simpleGit)();
 var repositoryURL = "git@github.com:BerkinAKKAYA/repo-to-push-demo.git";
 var directoryName = "repo-to-push";
-var fileToEdit = "values.json";
+var fileToEdit = "values.yml";
 var key = "replicaCount";
 var value = 2;
-var commitMessage = "set replicaCount to 2";
+var commitMessage = "set ".concat(key, " to ").concat(value);
 (function () { return __awaiter(void 0, void 0, void 0, function () {
-    var error_1, filePath, fileContentString, fileContentJSON, keys, lastKey, currentJson, _i, keys_1, _key, error_2, error_3;
+    var filePath, fileContentString, fileContentJSON, keys, lastKey, currentJson, _i, keys_1, _key, newFileContent, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 5, , 6]);
+                _a.trys.push([0, 11, , 12]);
                 return [4, fs.promises.rmdir(directoryName, { recursive: true })];
             case 1:
                 _a.sent();
@@ -63,24 +64,20 @@ var commitMessage = "set replicaCount to 2";
                 return [4, git.pull('origin', 'main', { '--rebase': 'false' })];
             case 4:
                 _a.sent();
-                return [3, 6];
-            case 5:
-                error_1 = _a.sent();
-                console.log(error_1);
-                return [3, 6];
-            case 6:
-                _a.trys.push([6, 9, , 10]);
                 filePath = "./".concat(directoryName, "/").concat(fileToEdit);
                 return [4, fs.promises.readFile(filePath, { encoding: "utf8" })];
-            case 7:
+            case 5:
                 fileContentString = _a.sent();
-                fileContentJSON = JSON.parse(fileContentString);
+                fileContentJSON = yaml.load(fileContentString);
                 if (key.includes(".")) {
                     keys = key.split(".");
                     lastKey = keys.pop();
                     currentJson = fileContentJSON;
                     for (_i = 0, keys_1 = keys; _i < keys_1.length; _i++) {
                         _key = keys_1[_i];
+                        if (!currentJson.hasOwnProperty(_key)) {
+                            throw new Error("Unknown Key / Path");
+                        }
                         currentJson = currentJson[_key];
                     }
                     currentJson[lastKey] = value;
@@ -88,37 +85,31 @@ var commitMessage = "set replicaCount to 2";
                 else {
                     fileContentJSON[key] = value;
                 }
-                return [4, fs.promises.writeFile(filePath, JSON.stringify(fileContentJSON))];
-            case 8:
+                newFileContent = yaml.dump(fileContentJSON);
+                return [4, fs.promises.writeFile(filePath, newFileContent)];
+            case 6:
                 _a.sent();
-                return [3, 10];
-            case 9:
-                error_2 = _a.sent();
-                console.log(error_2);
-                return [3, 10];
-            case 10:
-                _a.trys.push([10, 14, , 15]);
                 return [4, git.add(".")
                         .then(function (x) { return console.log("successfull: add"); })["catch"](function (x) { return console.log("error: add", x); })];
-            case 11:
+            case 7:
                 _a.sent();
                 return [4, git.commit(commitMessage, "*")
                         .then(function (x) { return console.log("successfull: commit"); })["catch"](function (x) { return console.log("error: commit", x); })];
-            case 12:
+            case 8:
                 _a.sent();
                 return [4, git.push("origin", "main")
                         .then(function (x) { return console.log("successfull: push"); })["catch"](function (x) { return console.log("couldn't push", x); })];
-            case 13:
+            case 9:
                 _a.sent();
-                return [3, 15];
-            case 14:
-                error_3 = _a.sent();
-                console.log("error:", error_3);
-                return [3, 15];
-            case 15: return [4, fs.promises.rmdir(directoryName, { recursive: true })];
-            case 16:
+                return [4, fs.promises.rmdir(directoryName, { recursive: true })];
+            case 10:
                 _a.sent();
-                return [2];
+                return [3, 12];
+            case 11:
+                error_1 = _a.sent();
+                console.log("error:", error_1);
+                return [3, 12];
+            case 12: return [2];
         }
     });
 }); })();

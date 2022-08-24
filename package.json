@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/BerkinAKKAYA/git-pusher-service-demo#readme",
   "dependencies": {
+    "js-yaml": "^4.1.0",
     "simple-git": "^3.13.0"
   },
   "devDependencies": {

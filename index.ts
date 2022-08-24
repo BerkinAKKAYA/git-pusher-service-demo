@@ -1,6 +1,7 @@
 import { simpleGit, SimpleGit } from 'simple-git';
 import * as fs from 'fs';
 
+const yaml = require('js-yaml');
 const git: SimpleGit = simpleGit();
 
 const repositoryURL = "git@github.com:BerkinAKKAYA/repo-to-push-demo.git";
@@ -32,6 +33,7 @@ const commitMessage = `set ${key} to ${value}`;
 		// get file content
 		const filePath = `./${directoryName}/${fileToEdit}`;
 		const fileContentString: string = await fs.promises.readFile(filePath, { encoding: "utf8" });
+		const fileContentJSON = yaml.load(fileContentString);
 
 		// edit file content
 		if (key.includes(".")) {
@@ -53,8 +55,10 @@ const commitMessage = `set ${key} to ${value}`;
 			fileContentJSON[key] = value;
 		}
 
+		const newFileContent = yaml.dump(fileContentJSON);
+
 		// write file content
-		await fs.promises.writeFile(filePath, JSON.stringify(fileContentJSON));
+		await fs.promises.writeFile(filePath, newFileContent);
 
 		// --- PUSH CHANGES ---
 

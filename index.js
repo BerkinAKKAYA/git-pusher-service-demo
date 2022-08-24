@@ -56,13 +56,16 @@ var directoryName = "repo-to-push";
                 return [4, fs.promises.appendFile("./".concat(directoryName, "/test2.txt"), "test2")];
             case 4:
                 _a.sent();
-                return [4, git.add(".")];
+                return [4, git.add(".")
+                        .then(function (x) { return console.log("added", x); })["catch"](function (x) { return console.log("couldn't add", x); })];
             case 5:
                 _a.sent();
-                return [4, git.commit("add test2.txt", "*")];
+                return [4, git.commit("add test2.txt", "*")
+                        .then(function (x) { return console.log("committed", x); })["catch"](function (x) { return console.log("couldn't commit", x); })];
             case 6:
                 _a.sent();
-                return [4, git.push("origin", "main")];
+                return [4, git.push("origin", "main")
+                        .then(function (x) { return console.log("pushed", x); })["catch"](function (x) { return console.log("couldn't push", x); })];
             case 7:
                 _a.sent();
                 return [2];

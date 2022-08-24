@@ -20,11 +20,17 @@ const directoryName = "repo-to-push";
 	await fs.promises.appendFile(`./${directoryName}/test2.txt`, "test2");
 
 	// add changes
-	await git.add(".");
+	await git.add(".")
+		.then(x => console.log("added", x))
+		.catch(x => console.log("couldn't add", x));
 
 	// commit changes
-	await git.commit("add test2.txt", "*");
+	await git.commit("add test2.txt", "*")
+		.then(x => console.log("committed", x))
+		.catch(x => console.log("couldn't commit", x));
 
 	// push changes
-	await git.push("origin", "main");
+	await git.push("origin", "main")
+		.then(x => console.log("pushed", x))
+		.catch(x => console.log("couldn't push", x));
 })()
